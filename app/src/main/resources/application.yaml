@@ -1,0 +1,29 @@
+server:
+  port: 8080
+
+spring:
+  jpa:
+    database: default
+    hibernate:
+      ddl-auto: create-drop
+  datasource:
+    url: jdbc:h2:mem:test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false
+    driverClassName: org.h2.Driver
+
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: localhost:9092
+      bindings:
+        output-member-activity:
+          destination: member-activity
+          contentType: application/json
+
+logging:
+  level:
+    root: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate: ERROR
+  pattern:
+    console: "[DEV] %d{DEFAULT} [%-5level] [${spring.application.name},%X{X-B3-TraceId},%X{X-B3-SpanId},%X{X-B3-ParentSpanId},%X{X-Span-Export}] [%t] %logger - %msg%n"

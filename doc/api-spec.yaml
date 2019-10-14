@@ -1,0 +1,227 @@
+swagger: "2.0"
+info:
+  description: ""
+  version: "1.0.0"
+  title: "Member Service"
+host: "rollychen.com"
+basePath: "/v1"
+tags:
+  - name: "Member"
+    description: "Member data operations"
+schemes:
+  - "https"
+  - "http"
+paths:
+  /members:
+    post:
+      tags:
+        - "Member"
+      summary: "Create a new member"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "The data to create the member with"
+          required: true
+          schema:
+            $ref: "#/definitions/MemberRequest"
+      responses:
+        201:
+          description: "Member was created"
+          schema:
+            $ref: "#/definitions/MemberResponse"
+        400:
+          description: "Invalid input"
+        409:
+          description: "A member already exists (the email already exists)"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    get:
+      tags:
+        - "Member"
+      summary: "Find members"
+      description: "Returns members"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "email"
+          in: "query"
+          description: "Email of member to return"
+          required: false
+          type: "string"
+          format: "email"
+        - name: "head"
+          in: "query"
+          description: "Start number"
+          required: false
+          type: "integer"
+          format: "int64"
+        - name: "tail"
+          in: "query"
+          description: "End number"
+          required: false
+          type: "integer"
+          format: "int64"
+      responses:
+        200:
+          description: "Members were found"
+          schema:
+            $ref: "#/definitions/ArrayOfMemberResponse"
+        400:
+          description: "Invalid email, head and tail supplied"
+  /members/{id}:
+    put:
+      tags:
+        - "Member"
+      summary: "Create a new member or update an existing member"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "Member's ID"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "The data to create or update the member with"
+          required: true
+          schema:
+            $ref: "#/definitions/MemberRequest"
+      responses:
+        201:
+          description: "Member was created"
+          schema:
+            $ref: "#/definitions/MemberResponse"
+        204:
+          description: "Member was updated"
+        400:
+          description: "Invalid input"
+        409:
+          description: "A member already exists (the email already exists)"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+    patch:
+      tags:
+        - "Member"
+      summary: "Update an existing member"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "Member's ID"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "The data to update the member with"
+          required: true
+          schema:
+            $ref: "#/definitions/MemberRequest"
+      responses:
+        204:
+          description: "Member was updated"
+        400:
+          description: "Invalid input"
+        409:
+          description: "A member already exists (the email already exists)"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    get:
+      tags:
+        - "Member"
+      summary: "Find member by ID"
+      description: "Returns a single member"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of member to return"
+          required: true
+          type: "string"
+          # format: "int64"
+      responses:
+        200:
+          description: "Member was found"
+          schema:
+            $ref: "#/definitions/MemberResponse"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Member not found"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+definitions:
+  MemberRequest:
+    type: "object"
+    required:
+      - "name"
+      - "email"
+      - "password"
+    properties:
+      name:
+        type: "string"
+        example: "Rocky"
+        description: "Member's name"
+      email:
+        type: "string"
+        example: "rocky.chen@hotmail.co.uk"
+        uniqueItems: true
+        description: "Member's email address (aka login ID)"
+      password:
+        type: "string"
+        example: "12345678"
+        description: "Member's login password"
+  MemberResponse:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        format: "UUID"
+        example: "92041dd2-a032-4208-a887-6fce76363803"
+        description: "Member's ID"
+      name:
+        type: "string"
+        example: "Rocky"
+        description: "Member's name"
+      email:
+        type: "string"
+        format: "email"
+        example: "rocky.chen@hotmail.co.uk"
+        description: "Member's email address (aka login ID)"
+  ArrayOfMemberResponse:
+    type: "array"
+    items:
+      $ref: "#/definitions/MemberResponse"
+  ErrorResponse:
+    type: "object"
+    properties:
+      traceId:
+        type: "string"
+        example: "2485ec27856c56f4"
+        description: "Trace ID (withing the whole system"
+      spanId:
+        type: "string"
+        example: "9aa10ee6fbde75fa"
+        description: "Span ID (within the service itself)"
+      code:
+        type: "string"
+        example: "0x001001"
+        description: "Error code"
+      message:
+        type: "string"
+        example: "Member doesn't exist"
+        description: "Error message"

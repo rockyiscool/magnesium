@@ -1,0 +1,104 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: magnesium
+spec:
+  template:
+    metadata:
+      labels:
+        app: magnesium
+    spec:
+      containers:
+        - name: magnesium
+          image: @IMAGE
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+            - name: actuator
+              containerPort: 8081
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: "/actuator/health"
+              port: 8081
+          #            initialDelaySeconds: 120
+          #            timeoutSeconds: 5
+          volumeMounts:
+            - name: application-config
+              mountPath: "/config"
+              readOnly: true
+          env:
+            - name: SPRING_PROFILE
+              value: dev
+            - name: SPRING_CONFIG_URI
+              value: "http://cobalt"
+      volumes:
+        - name: application-config
+          configMap:
+            name: magnesium
+            items:
+              - key: application.yaml
+                path: application.yaml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: magnesium
+spec:
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8080
+    - name: actuator
+      protocol: TCP
+      port: 8081
+      targetPort: 8081
+  selector:
+    app: magnesium
+  type: NodePort
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: magnesium
+data:
+  application.yaml: |-
+    server:
+      port: 8080
+    spring:
+      jpa:
+        hibernate:
+          ddl-auto: validate
+      datasource:
+        driverClassName: org.postgresql.Driver
+        url: jdbc:postgresql://postgres:5432/magnesium
+        username: admin
+        password: admin123
+      cloud:
+        stream:
+          kafka:
+            binder:
+              brokers: kafka:9092
+          bindings:
+            output-member-activity:
+              destination: member-activity
+              contentType: application/json
+    management:
+      server:
+        port: 8081
+      endpoints:
+        web:
+          exposure:
+            include: "*"
+        health:
+          show-details: when-authorized
+      info:
+        git:
+          mode: full
+    logging:
+      level:
+        root: DEBUG
+      pattern:
+        console: "[K8S] %d{DEFAULT} [%-5level] [${spring.application.name},%X{X-B3-TraceId},%X{X-B3-SpanId},%X{X-B3-ParentSpanId}] [%t] %logger{5} - %msg%n"
