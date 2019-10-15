@@ -35,11 +35,11 @@ jobs:
       - name: Set KUBECONFIG
         run: |
           export KUBECONFIG="${GITHUB_WORKSPACE}"/kind-kube.config
+          echo $PATH
 
       - name: Load docker image
         run: |
-          export PATH="${GITHUB_WORKSPACE}"/kind:$PATH
-          scripts/2_load_docker_images.sh
+          scripts/2_load_docker_images.sh "${GITHUB_WORKSPACE}"/kind
 
       - name: Create an integration test environment
         run: |
