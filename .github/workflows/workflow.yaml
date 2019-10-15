@@ -1,0 +1,51 @@
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build and Test
+
+    steps:
+
+      - name: Check out code
+        uses: actions/checkout@v1
+
+      - name: Set up JDK 11.0.2
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11.0.2'
+
+      - name: Build, run unit and component tests
+        run: ./mvnw clean verify -pl '!e2e'
+
+      - name: Check docker images
+        run: docker images
+
+      - name: Initial a kube config file.
+        run: |
+          touch "${GITHUB_WORKSPACE}"/kind-kube.config
+
+      - name: Create a cluster
+        id: kind-env
+        uses: rockyhmchen/gh-actions-kind-env@master
+        with:
+          kind-version: "v0.5.1"
+          kubeconfig-file: "kind-kube.config"
+
+      - name: Set KUBECONFIG
+        run: |
+          export KUBECONFIG="${GITHUB_WORKSPACE}"/kind-kube.config
+
+      - name: Load docker image
+        run: scripts/2_load_docker_images.sh
+
+      - name: Create an integration test environment
+        run: |
+          scripts/3_set_image.sh
+          scripts/4_startup.sh
+
+      - name: Port-forward
+        run: scripts/5_kubefwd_kind.sh
+
+      - name: Run integration tests
+        run: ./mvnw clean verify -pl 'e2e'
