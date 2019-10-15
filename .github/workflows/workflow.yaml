@@ -37,7 +37,9 @@ jobs:
           export KUBECONFIG="${GITHUB_WORKSPACE}"/kind-kube.config
 
       - name: Load docker image
-        run: scripts/2_load_docker_images.sh
+        run: |
+          echo ::add-path::"${GITHUB_WORKSPACE}"/kind
+          scripts/2_load_docker_images.sh
 
       - name: Create an integration test environment
         run: |
