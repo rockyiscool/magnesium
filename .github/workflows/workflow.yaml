@@ -38,7 +38,7 @@ jobs:
 
       - name: Load docker image
         run: |
-          echo ::add-path::"${GITHUB_WORKSPACE}"/kind
+          export PATH="${GITHUB_WORKSPACE}"/kind:$PATH
           scripts/2_load_docker_images.sh
 
       - name: Create an integration test environment
