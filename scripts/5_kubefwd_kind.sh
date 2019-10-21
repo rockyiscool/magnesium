@@ -8,4 +8,5 @@ then
 fi
 
 #sudo kubefwd svc -n ${_NAMESPACE} -c ~/.kube/kind-config-test-cluster
-sudo kubefwd svc -n ${_NAMESPACE} -c ~/.kube/kind-config-kind
+#sudo kubefwd svc -n ${_NAMESPACE} -c ~/.kube/kind-config-kind
+kubefwd svc -n ${_NAMESPACE} -c ~/.kube/kind-config-kind
