@@ -35,6 +35,11 @@ jobs:
           scripts/3_set_image.sh
           scripts/4_startup.sh
 
+      - name: Setup kubefwd
+        uses: rockyhmchen/gh-actions-setup-kubefwd@master
+        with:
+          kubefwd-version: "v1.9.2"
+
       - name: Port-forward
         run: scripts/5_kubefwd_kind.sh
 
