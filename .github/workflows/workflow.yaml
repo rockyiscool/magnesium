@@ -27,8 +27,14 @@ jobs:
       - name: ls hosts
         run: ls /etc/hosts
 
-      - name: sudo ls
-        run: sudo ls /etc/hosts
+      - name: cat hosts
+        run: cat /etc/hosts
+
+      - name: sudo kubefwd 1
+        run: sudo -u root /opt/hostedtoolcache/kubefwd/1.9.2/x64/kubefwd
+
+      - name: sudo kubefwd 2
+        run: sudo -u root kubefwd
 
 
 #      - name: Check out code
