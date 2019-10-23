@@ -7,12 +7,20 @@ jobs:
 
     steps:
 
+      - name: Setup kubefwd
+        uses: rockyhmchen/gh-actions-setup-kubefwd@master
+        with:
+          kubefwd-version: "v1.9.2"
+
       - name: sudo version
         run: sudo --version
 
       - name: ls hosts
         run: ls /etc/hosts
-        
+
+      - name: sudo kubefwd
+        run: sudo kubefwd --version
+
 
 #      - name: Check out code
 #        uses: actions/checkout@v1
