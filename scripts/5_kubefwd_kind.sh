@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 
- _NAMESPACE="$1"
+kubefwdCmd=$1
+kubeConfig=$2
 
 if [ -z "$1" ]
 then
-    _NAMESPACE="itest"
+    kubefwdCmd=kubefwd
 fi
 
-#sudo kubefwd svc -n ${_NAMESPACE} -c ~/.kube/kind-config-test-cluster
-#sudo kubefwd svc -n ${_NAMESPACE} -c ~/.kube/kind-config-kind
-kubefwd svc -n ${_NAMESPACE} -c ~/.kube/kind-config-kind
+if [ -z "$2" ]
+then
+    kubeconfig=~/.kube/config
+fi
+
+$kubefwdCmd svc -n itest -c $kubeConfig

@@ -1,13 +1,10 @@
 #!/usr/bin/env bash
 
-KIND=$1
+kindCmd=$1
 if [ -z "$1" ]
 then
-    KIND=kind
+    kindCmd=kind
 fi
 
-#NAME="test-cluster"
-
 echo "Load com.rc/magnesium:DEV"
-#"${KIND}" load docker-image --name "${NAME}" com.rc/magnesium:DEV
-"${KIND}" load docker-image com.rc/magnesium:DEV
+$kindCmd load docker-image com.rc/magnesium:DEV

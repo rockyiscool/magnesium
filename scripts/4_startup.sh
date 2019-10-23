@@ -42,20 +42,14 @@ function wait_until_pods_ready() {
   return 1
 }
 
- _NAMESPACE="$1"
- _K8S="$2"
+namespace="itest"
+k8sDir="e2e/src/test/resources/k8s"
 
-if [ -z "$1" ] && [ -z "$2" ]
-then
-    _NAMESPACE="itest"
-    _K8S="e2e/src/test/resources/k8s"
-fi
-
-echo "Create a namespace - $_NAMESPACE"
-kubectl create namespace "$_NAMESPACE"
+echo "Create a namespace - $namespace"
+kubectl create namespace $namespace
 
 echo "Apply all the yamls in k8s directory"
-kubectl -n "$_NAMESPACE" apply -f "$_K8S"
+kubectl -n $namespace apply -f $k8sDir
 
 echo "Waiting for all pods ready"
-wait_until_pods_ready "$_NAMESPACE"
+wait_until_pods_ready $namespace
