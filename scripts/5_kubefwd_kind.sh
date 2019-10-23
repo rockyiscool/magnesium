@@ -10,7 +10,7 @@ fi
 
 if [ -z "$2" ]
 then
-    kubeconfig=~/.kube/config
+    kubeConfig=~/.kube/config
 fi
 
-$kubefwdCmd svc -n itest -c $kubeConfig
+$kubefwdCmd services --namespace itest --kubeconfig $kubeConfig
