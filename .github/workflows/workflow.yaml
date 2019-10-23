@@ -19,7 +19,7 @@ jobs:
         run: ls /etc/hosts
 
       - name: sudo kubefwd
-        run: sudo kubefwd --version
+        run: sudo -s kubefwd --version
 
 
 #      - name: Check out code
