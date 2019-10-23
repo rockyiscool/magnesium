@@ -12,14 +12,23 @@ jobs:
         with:
           kubefwd-version: "v1.9.2"
 
+      - name: kubefwd version
+        run: kubefwd --version
+
+      - name: which kubefwd
+        run: which kubefwd
+
       - name: sudo version
         run: sudo --version
+
+      - name: which sudo
+        run: which sudo
 
       - name: ls hosts
         run: ls /etc/hosts
 
-      - name: sudo kubefwd
-        run: sudo -s kubefwd --version
+      - name: sudo ls
+        run: sudo ls /etc/hosts
 
 
 #      - name: Check out code
