@@ -40,7 +40,8 @@ jobs:
           kubefwd-version: "v1.9.2"
 
       - name: Port-forward
-        run: sudo -u root scripts/5_kubefwd_kind.sh /opt/hostedtoolcache/kubefwd/1.9.2/x64/kubefwd &
+        #        run: sudo -u root scripts/5_kubefwd_kind.sh /opt/hostedtoolcache/kubefwd/1.9.2/x64/kubefwd &
+        run: sudo -u root /opt/hostedtoolcache/kubefwd/1.9.2/x64/kubefwd svc -n itest &
 
       - name: Run integration tests
         run: ./mvnw clean verify -pl 'e2e'
